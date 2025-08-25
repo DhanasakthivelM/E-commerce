@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Processing - E-Commerce Store</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #5a67d8;
+            --accent-color: #7c88f7;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --background-light: #f8fafc;
+            --white: #ffffff;
+            --border-light: #e5e7eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --blue-light: #f0f4ff;
+            --blue-gradient: linear-gradient(135deg, #667eea, #7c88f7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background-light);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            text-decoration: none;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--blue-gradient);
+            color: var(--white);
+            padding: 60px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* Payment Container */
+        .payment-container {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.1);
+            margin: 30px 0;
+            padding: 40px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .payment-method {
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary-color);
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary-color);
+            background: var(--blue-light);
+        }
+
+        .btn-pay {
+            background: var(--blue-gradient);
+            border: none;
+            color: var(--white);
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-pay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: var(--white);
+        }
+
+        .order-summary {
+            background: var(--blue-light);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding-top: 15px;
+            margin-top: 10px;
+            border-top: 2px solid var(--primary-color);
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar navbar-expand-lg py-3">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="fas fa-shopping-bag me-2"></i>
+                    E-Store
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">
+                <i class="fas fa-lock me-3"></i>
+                Secure Payment
+            </h1>
+            <p class="page-subtitle">Complete your payment securely</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        <div class="row">
+            <!-- Payment Methods -->
+            <div class="col-lg-8">
+                <div class="payment-container">
+                    <h3 class="mb-4">
+                        <i class="fas fa-credit-card me-2"></i>
+                        Choose Payment Method
+                    </h3>
+
+                    <form th:action="@{'/customer/confirm-payment/' + ${order.orderId}}" method="post">
+                        <!-- Credit/Debit Card -->
+                        <div class="payment-method" onclick="selectPayment('card')">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="card">
+                                <label class="form-check-label" for="card">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-credit-card me-3 text-primary" style="font-size: 1.5rem;"></i>
+                                        <div>
+                                            <h5 class="mb-1">Credit/Debit Card</h5>
+                                            <p class="text-muted mb-0">Pay securely with your card</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- UPI Payment -->
+                        <div class="payment-method" onclick="selectPayment('upi')">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="upi" value="upi">
+                                <label class="form-check-label" for="upi">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-mobile-alt me-3 text-success" style="font-size: 1.5rem;"></i>
+                                        <div>
+                                            <h5 class="mb-1">UPI Payment</h5>
+                                            <p class="text-muted mb-0">Pay using UPI ID or QR code</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Net Banking -->
+                        <div class="payment-method" onclick="selectPayment('netbanking')">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="netbanking" value="netbanking">
+                                <label class="form-check-label" for="netbanking">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-university me-3 text-info" style="font-size: 1.5rem;"></i>
+                                        <div>
+                                            <h5 class="mb-1">Net Banking</h5>
+                                            <p class="text-muted mb-0">Pay through your bank account</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-pay mt-4">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            Pay Securely ₹<span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 0)}">0</span>
+                        </button>
+
+                        <div class="security-badge">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Your payment is secured with 256-bit SSL encryption</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="payment-container">
+                    <h4 class="mb-4">
+                        <i class="fas fa-receipt me-2"></i>
+                        Order Summary
+                    </h4>
+
+                    <div class="order-summary">
+                        <div class="summary-item">
+                            <span>Order ID:</span>
+                            <span>#<span th:text="${order.orderId}">12345</span></span>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>Order Date:</span>
+                            <span th:text="${order.orderDate}">2024-01-01</span>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>Subtotal:</span>
+                            <span>₹<span th:text="${#numbers.formatDecimal(order.totalAmount / 1.18, 0, 0)}">0</span></span>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>Tax (GST 18%):</span>
+                            <span>₹<span th:text="${#numbers.formatDecimal(order.totalAmount - (order.totalAmount / 1.18), 0, 0)}">0</span></span>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>Total Amount:</span>
+                            <span class="text-primary">₹<span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 0)}">0</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function selectPayment(method) {
+            // Remove selected class from all payment methods
+            document.querySelectorAll('.payment-method').forEach(pm => {
+                pm.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked payment method
+            event.currentTarget.classList.add('selected');
+            
+            // Check the radio button
+            document.getElementById(method).checked = true;
+        }
+
+        // Auto-select first payment method
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('card').checked = true;
+            document.querySelector('.payment-method').classList.add('selected');
+        });
+    </script>
+</body>
+</html> 

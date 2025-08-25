@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - E-Commerce Store</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #5a67d8;
+            --accent-color: #7c88f7;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --background-light: #f8fafc;
+            --white: #ffffff;
+            --border-light: #e5e7eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --blue-light: #f0f4ff;
+            --blue-gradient: linear-gradient(135deg, #667eea, #7c88f7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background-light);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            text-decoration: none;
+        }
+
+        /* Success Header */
+        .success-header {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: var(--white);
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-10px); }
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* Confirmation Container */
+        .confirmation-container {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.1);
+            margin: 30px 0;
+            padding: 40px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .order-details {
+            background: var(--blue-light);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            margin-bottom: 25px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn-primary-custom {
+            background: var(--blue-gradient);
+            border: none;
+            color: var(--white);
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: var(--white);
+        }
+
+        .btn-secondary-custom {
+            background: var(--white);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary-custom:hover {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-light);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -23px;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--success-color);
+        }
+
+        .timeline-content {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar navbar-expand-lg py-3">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="fas fa-shopping-bag me-2"></i>
+                    E-Store
+                </a>
+                
+                <!-- Navigation Links -->
+                <div class="navbar-nav ms-auto d-flex flex-row">
+                    <a class="nav-link px-3" href="/customer/my-orders">
+                        <i class="fas fa-box me-1"></i>
+                        My Orders
+                    </a>
+                    <a class="nav-link px-3" href="/products/allproducts">
+                        <i class="fas fa-store me-1"></i>
+                        Products
+                    </a>
+                    <a class="nav-link px-3" href="/">
+                        <i class="fas fa-home me-1"></i>
+                        Home
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Success Header -->
+    <section class="success-header">
+        <div class="container">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1 class="success-title">Order Confirmed!</h1>
+            <p class="lead">Thank you for your purchase. Your order has been successfully placed.</p>
+        </div>
+    </section>
+
+    <!-- Success/Error Messages -->
+    <div class="container pt-4">
+        <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${message}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        <div class="row">
+            <!-- Order Details -->
+            <div class="col-lg-8">
+                <div class="confirmation-container">
+                    <h3 class="mb-4">
+                        <i class="fas fa-receipt me-2"></i>
+                        Order Details
+                    </h3>
+
+                    <div class="order-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Order ID:</span>
+                            <span class="detail-value">#<span th:text="${order.orderId}">12345</span></span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Order Date:</span>
+                            <span class="detail-value" th:text="${order.orderDate}">2024-01-01</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Customer:</span>
+                            <span class="detail-value" th:text="${order.user.username}">Customer Name</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Total Amount:</span>
+                            <span class="detail-value text-primary">₹<span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 0)}">0</span></span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Order Status:</span>
+                            <span class="detail-value">
+                                <span class="status-badge status-pending" th:text="${order.status}">PENDING</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Payment Information -->
+                    <h4 class="mb-3">
+                        <i class="fas fa-credit-card me-2"></i>
+                        Payment Information
+                    </h4>
+
+                    <div class="order-details" th:if="${payments != null and !payments.isEmpty()}">
+                        <div th:each="payment : ${payments}" class="mb-3">
+                            <div class="detail-row">
+                                <span class="detail-label">Payment ID:</span>
+                                <span class="detail-value">#<span th:text="${payment.paymentId}">123</span></span>
+                            </div>
+
+                            <div class="detail-row">
+                                <span class="detail-label">Payment Date:</span>
+                                <span class="detail-value" th:text="${payment.paymentDate}">2024-01-01</span>
+                            </div>
+
+                            <div class="detail-row">
+                                <span class="detail-label">Amount Paid:</span>
+                                <span class="detail-value">₹<span th:text="${#numbers.formatDecimal(payment.amount, 0, 0)}">0</span></span>
+                            </div>
+
+                            <div class="detail-row">
+                                <span class="detail-label">Payment Status:</span>
+                                <span class="detail-value">
+                                    <span th:class="'status-badge ' + (${payment.paymentStatus.name()} == 'COMPLETED' ? 'status-completed' : 'status-pending')" 
+                                          th:text="${payment.paymentStatus}">PENDING</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="order-details" th:if="${payments == null or payments.isEmpty()}">
+                        <p class="text-muted">No payment information available.</p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <a href="/customer/my-orders" class="btn-primary-custom">
+                            <i class="fas fa-box"></i>
+                            View All Orders
+                        </a>
+                        <a href="/products/allproducts" class="btn-secondary-custom">
+                            <i class="fas fa-shopping-cart"></i>
+                            Continue Shopping
+                        </a>
+                        <a href="/" class="btn-secondary-custom">
+                            <i class="fas fa-home"></i>
+                            Go to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Timeline -->
+            <div class="col-lg-4">
+                <div class="confirmation-container">
+                    <h4 class="mb-4">
+                        <i class="fas fa-truck me-2"></i>
+                        Order Timeline
+                    </h4>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h6 class="mb-1">Order Placed</h6>
+                                <small class="text-muted" th:text="${order.orderDate}">Today</small>
+                                <p class="mb-0 text-success">✓ Completed</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h6 class="mb-1">Payment Confirmed</h6>
+                                <small class="text-muted">Processing</small>
+                                <p class="mb-0 text-warning" th:if="${payments != null and !payments.isEmpty() and payments[0].paymentStatus.name() == 'PENDING'}">⏳ Pending</p>
+                                <p class="mb-0 text-success" th:if="${payments != null and !payments.isEmpty() and payments[0].paymentStatus.name() == 'COMPLETED'}">✓ Completed</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h6 class="mb-1">Order Processing</h6>
+                                <small class="text-muted">1-2 business days</small>
+                                <p class="mb-0 text-muted">⏳ Pending</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h6 class="mb-1">Shipped</h6>
+                                <small class="text-muted">2-3 business days</small>
+                                <p class="mb-0 text-muted">⏳ Pending</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h6 class="mb-1">Delivered</h6>
+                                <small class="text-muted">5-7 business days</small>
+                                <p class="mb-0 text-muted">⏳ Pending</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h6><i class="fas fa-info-circle me-2"></i>Need Help?</h6>
+                        <p class="mb-2 small">Contact our customer support:</p>
+                        <p class="mb-1 small"><i class="fas fa-phone me-2"></i>+91 9876543210</p>
+                        <p class="mb-0 small"><i class="fas fa-envelope me-2"></i>support@estore.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

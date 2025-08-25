@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Product - E-Commerce Store</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #5a67d8;
+            --accent-color: #7c88f7;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --background-light: #f8fafc;
+            --white: #ffffff;
+            --border-light: #e5e7eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --blue-light: #f0f4ff;
+            --blue-gradient: linear-gradient(135deg, #667eea, #7c88f7);
+            --blue-dark: #4c51bf;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--blue-gradient);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            text-decoration: none;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .main-container .row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+        }
+
+        .form-container {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.15);
+            overflow: hidden;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        /* Form Header */
+        .form-header {
+            background: var(--blue-gradient);
+            color: var(--white);
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .form-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .form-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Form Body */
+        .form-body {
+            padding: 40px;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+            border: 2px solid var(--success-color);
+            color: var(--success-color);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .success-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--success-color);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: var(--white);
+            color: var(--text-primary);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: rgba(102, 126, 234, 0.02);
+        }
+
+        .form-control:hover {
+            border-color: var(--accent-color);
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--error-color);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .form-control[readonly] {
+            background: var(--blue-light);
+            border-color: var(--accent-color);
+            cursor: not-allowed;
+        }
+
+        /* Textarea */
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* File Input */
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            border: 2px dashed var(--border-light);
+            border-radius: 12px;
+            background: var(--blue-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .file-input-label:hover {
+            border-color: var(--primary-color);
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary-color);
+        }
+
+        .file-input:focus + .file-input-label {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .file-icon {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .file-text {
+            text-align: center;
+        }
+
+        .file-selected {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        /* Input Icons */
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            z-index: 10;
+        }
+
+        .input-group .form-control {
+            padding-left: 45px;
+        }
+
+        /* Submit Button */
+        .submit-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .btn-submit {
+            background: var(--blue-gradient);
+            border: none;
+            color: var(--white);
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+            cursor: pointer;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            color: var(--white);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Navigation Links */
+        .form-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+        }
+
+        /* Form Validation */
+        .invalid-feedback {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .valid-feedback {
+            color: var(--success-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 20px auto;
+                padding: 0 15px;
+            }
+
+            .main-container .row {
+                flex-direction: column;
+            }
+
+            .categories-container {
+                margin-left: 0;
+                margin-top: 20px;
+            }
+
+            .form-body {
+                padding: 30px 20px;
+            }
+
+            .form-header {
+                padding: 25px 20px;
+            }
+
+            .form-title {
+                font-size: 1.8rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .btn-submit {
+                width: 100%;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid var(--white);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Form Steps Indicator */
+        .form-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 20px;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Categories Table Styles */
+        .categories-container {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.1);
+            margin-left: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .categories-header {
+            background: var(--blue-gradient);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .categories-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .categories-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .categories-table-wrapper {
+            padding: 20px;
+        }
+
+        .categories-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .categories-table th {
+            background: var(--blue-light);
+            color: var(--primary-color);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .categories-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-primary);
+        }
+
+        .categories-table tr:hover {
+            background: var(--blue-light);
+        }
+
+        .categories-table tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar navbar-expand-lg py-3">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="fas fa-shopping-bag me-2"></i>
+                    E-Store
+                </a>
+                
+                <!-- Navigation Links -->
+                <div class="navbar-nav ms-auto d-flex flex-row">
+                    <a class="nav-link px-3" href="/products/allproducts">
+                        <i class="fas fa-grid-2 me-1"></i>
+                        Products
+                    </a>
+                    <a class="nav-link px-3" href="/admin/allproducts">
+                        <i class="fas fa-list me-1"></i>
+                        Manage Products
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="row">
+            <!-- Left Column - Update Product Form -->
+            <div class="col-md-8">
+                <div class="form-container">
+            <!-- Form Header -->
+            <div class="form-header">
+                <div class="form-nav">
+                    <a href="/admin/allproducts" class="nav-link">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Products
+                    </a>
+                    <a href="/products/allproducts" class="nav-link">
+                        <i class="fas fa-eye"></i>
+                        View Store
+                    </a>
+                </div>
+                <h1 class="form-title">
+                    <i class="fas fa-edit me-3"></i>
+                    Update Product
+                </h1>
+                <p class="form-subtitle">Modify your existing product information</p>
+            </div>
+
+            <!-- Form Body -->
+            <div class="form-body">
+                <!-- Success Message -->
+                <div th:if="${ans}" class="success-message">
+                    <div class="success-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div>
+                        <strong>Success!</strong> Product updated successfully in your store.
+                    </div>
+                </div>
+
+                <!-- Form Steps Indicator -->
+                <div class="form-steps">
+                    <div class="step-item">
+                        <i class="fas fa-edit"></i>
+                        <span>Update Product Information</span>
+                    </div>
+                </div>
+
+                <!-- Product Update Form -->
+                <form th:action="@{/admin/productupdate-form}" method="post" enctype="multipart/form-data" th:object="${product}" id="productForm">
+                    
+                    <!-- Product ID (readonly) -->
+                    <div class="form-group">
+                        <label for="productId" class="form-label">
+                            <i class="fas fa-hashtag me-2"></i>Product ID
+                        </label>
+                        <div class="input-group">
+                            <i class="fas fa-id-card input-icon"></i>
+                            <input type="text" 
+                                   id="productId" 
+                                   th:field="*{productId}" 
+                                   class="form-control" 
+                                   readonly
+                                   title="Product ID cannot be changed" />
+                        </div>
+                        <small class="text-muted">Product ID cannot be modified</small>
+                    </div>
+
+                    <!-- Basic Information Row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name" class="form-label">
+                                <i class="fas fa-tag me-2"></i>Product Name
+                            </label>
+                            <div class="input-group">
+                                <i class="fas fa-box input-icon"></i>
+                                <input type="text" 
+                                       id="name" 
+                                       th:field="*{name}" 
+                                       class="form-control" 
+                                       placeholder="Enter product name"
+                                       title="Please enter a valid name." />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="price" class="form-label">
+                                <i class="fas fa-rupee-sign me-2"></i>Price (₹)
+                            </label>
+                            <div class="input-group">
+                                <i class="fas fa-money-bill input-icon"></i>
+                                <input type="number" 
+                                       id="price" 
+                                       step="0.01" 
+                                       th:field="*{price}" 
+                                       class="form-control" 
+                                       placeholder="0.00"
+                                       title="Please enter a valid price." />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category and Stock Row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="categoryId" class="form-label">
+                                <i class="fas fa-folder me-2"></i>Category ID
+                            </label>
+                            <div class="input-group">
+                                <i class="fas fa-list input-icon"></i>
+                                <input type="number" 
+                                       id="categoryId" 
+                                       th:field="*{categoryId}" 
+                                       class="form-control" 
+                                       placeholder="Enter category ID"
+                                       title="Please enter a valid CategoryID."/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="stockQuantity" class="form-label">
+                                <i class="fas fa-warehouse me-2"></i>Stock Quantity
+                            </label>
+                            <div class="input-group">
+                                <i class="fas fa-cubes input-icon"></i>
+                                <input type="number" 
+                                       id="stockQuantity" 
+                                       th:field="*{stockQuantity}" 
+                                       class="form-control" 
+                                       placeholder="Enter stock quantity"
+                                       title="Please enter a valid Stock Quantity."/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="description" class="form-label">
+                            <i class="fas fa-align-left me-2"></i>Product Description
+                        </label>
+                        <textarea id="description" 
+                                  th:field="*{description}" 
+                                  class="form-control" 
+                                  placeholder="Enter detailed product description..."
+                                  title="Please enter a valid Description."></textarea>
+                    </div>
+
+                    <!-- Product Image -->
+                    <div class="form-group">
+                        <label for="imageFile" class="form-label">
+                            <i class="fas fa-image me-2"></i>Product Image
+                        </label>
+                        <div class="file-input-wrapper">
+                            <input type="file" 
+                                   id="imageFile" 
+                                   name="imageFile" 
+                                   class="file-input" 
+                                   accept="image/*"
+                                   title="Please upload an image below100KB" />
+                            <label for="imageFile" class="file-input-label" id="fileLabel">
+                                <i class="fas fa-cloud-upload-alt file-icon"></i>
+                                <div class="file-text">
+                                    <div><strong>Click to update image</strong></div>
+                                    <div>or drag and drop</div>
+                                    <small>PNG, JPG up to 100KB (optional)</small>
+                                </div>
+                            </label>
+                        </div>
+                        <small class="text-muted">Leave empty to keep current image</small>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="submit-section">
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            <i class="fas fa-save"></i>
+                            <span>Update Product</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+            </div>
+            
+            <!-- Right Column - Categories Table -->
+            <div class="col-md-4">
+                <div class="categories-container">
+                    <div class="categories-header">
+                        <h3 class="categories-title">
+                            <i class="fas fa-list me-2"></i>
+                            Available Categories
+                        </h3>
+                        <p class="categories-subtitle">Reference for Category IDs</p>
+                    </div>
+                    
+                    <div class="categories-table-wrapper">
+                        <table class="categories-table">
+                            <thead>
+                                <tr>
+                                    <th>Category ID</th>
+                                    <th>Category Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="category : ${categories}">
+                                    <td th:text="${category.categoryId}">1</td>
+                                    <td th:text="${category.name}">Electronics</td>
+                                </tr>
+                                <tr th:if="${categories == null or categories.isEmpty()}">
+                                    <td colspan="2" style="text-align: center; color: #6b7280;">No categories available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('productForm');
+            const fileInput = document.getElementById('imageFile');
+            const fileLabel = document.getElementById('fileLabel');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // File input handling
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    fileLabel.classList.add('file-selected');
+                    fileLabel.innerHTML = `
+                        <i class="fas fa-check-circle file-icon"></i>
+                        <div class="file-text">
+                            <div><strong>${file.name}</strong></div>
+                            <div>File selected successfully</div>
+                            <small>${(file.size / 1024).toFixed(1)} KB</small>
+                        </div>
+                    `;
+                }
+            });
+
+            // Form validation
+            const inputs = form.querySelectorAll('input:not([readonly]), textarea');
+            inputs.forEach(input => {
+                input.addEventListener('blur', validateField);
+                input.addEventListener('input', clearValidation);
+            });
+
+            function validateField(e) {
+                const field = e.target;
+                if (field.hasAttribute('required') && !field.value.trim()) {
+                    field.classList.add('is-invalid');
+                } else {
+                    field.classList.remove('is-invalid');
+                    if (field.value.trim()) {
+                        field.classList.add('is-valid');
+                    }
+                }
+            }
+
+            function clearValidation(e) {
+                const field = e.target;
+                field.classList.remove('is-invalid', 'is-valid');
+            }
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                // Show loading state
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <div class="loading-spinner"></div>
+                    <span>Updating Product...</span>
+                `;
+            });
+
+            // Auto-focus first editable input
+            const firstInput = form.querySelector('input:not([readonly])');
+            if (firstInput) {
+                firstInput.focus();
+            }
+
+            // Enhanced file validation
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Check file size (100KB = 100000 bytes)
+                    if (file.size > 100000) {
+                        alert('File size must be less than 100KB');
+                        this.value = '';
+                        fileLabel.classList.remove('file-selected');
+                        fileLabel.innerHTML = `
+                            <i class="fas fa-cloud-upload-alt file-icon"></i>
+                            <div class="file-text">
+                                <div><strong>Click to update image</strong></div>
+                                <div>or drag and drop</div>
+                                <small>PNG, JPG up to 65KB (optional)</small>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    // Check file type
+                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                    if (!allowedTypes.includes(file.type)) {
+                        alert('Please upload only image files (JPEG, PNG, GIF)');
+                        this.value = '';
+                        return;
+                    }
+                }
+            });
+
+            // Drag and drop functionality
+            fileLabel.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderColor = 'var(--primary-color)';
+                this.style.background = 'rgba(102, 126, 234, 0.1)';
+            });
+
+            fileLabel.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.style.borderColor = 'var(--border-light)';
+                this.style.background = 'var(--blue-light)';
+            });
+
+            fileLabel.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.borderColor = 'var(--border-light)';
+                this.style.background = 'var(--blue-light)';
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    fileInput.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+    </script>
+</body>
+</html>

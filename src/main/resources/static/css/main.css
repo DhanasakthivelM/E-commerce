@@ -1,0 +1,504 @@
+/* 
+=======================================
+BEGINNER-FRIENDLY E-COMMERCE STYLES
+=======================================
+This file contains all the main styles for our e-commerce application.
+Each section is clearly labeled and explained.
+*/
+
+/* 
+------------------
+ROOT VARIABLES
+------------------
+These are our main colors and values used throughout the app.
+By changing these, you can easily update the entire theme.
+*/
+:root {
+    /* Main brand colors */
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --accent-color: #f7941d;
+    --gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    
+    /* Status colors */
+    --success-color: #00b894;
+    --warning-color: #f7941d;
+    --danger-color: #e84393;
+    --info-color: #0984e3;
+    
+    /* Admin theme colors */
+    --admin-primary: #2c3e50;
+    --admin-secondary: #34495e;
+    --admin-accent: #e67e22;
+    
+    /* Text colors */
+    --text-dark: #333333;
+    --text-light: #666666;
+    --text-white: #ffffff;
+    
+    /* Background colors */
+    --bg-light: #f8f9fa;
+    --bg-white: #ffffff;
+    --bg-transparent: rgba(255, 255, 255, 0.95);
+    
+    /* Border and shadow values */
+    --border-radius: 10px;
+    --border-radius-large: 20px;
+    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --box-shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+    
+    /* Spacing */
+    --spacing-small: 10px;
+    --spacing-medium: 20px;
+    --spacing-large: 30px;
+}
+
+/* 
+------------------
+GLOBAL STYLES
+------------------
+These styles apply to the entire website
+*/
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-dark);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+/* Make all animations smooth */
+* {
+    transition: all 0.3s ease;
+}
+
+/* 
+------------------
+NAVIGATION STYLES
+------------------
+Styles for the top navigation bar
+*/
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: var(--primary-color) !important;
+}
+
+/* 
+------------------
+BUTTON STYLES
+------------------
+Different button styles used throughout the app
+*/
+
+/* Main gradient button - used for primary actions */
+.btn-gradient {
+    background: var(--gradient);
+    border: none;
+    color: var(--text-white);
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    color: var(--text-white);
+}
+
+/* Action button - used for dashboard actions */
+.action-btn {
+    border-radius: var(--border-radius);
+    padding: 12px 25px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+/* 
+------------------
+CARD STYLES
+------------------
+Reusable card components
+*/
+
+/* Basic card style */
+.card-basic {
+    border: none;
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow);
+    background: var(--bg-white);
+    overflow: hidden;
+}
+
+/* Card that moves up on hover */
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+/* Login and register card styles */
+.card-login,
+.card-register {
+    border: none;
+    border-radius: var(--border-radius-large);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    background: var(--bg-transparent);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Dashboard cards */
+.dashboard-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: var(--spacing-medium);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+/* 
+------------------
+FORM STYLES
+------------------
+Styles for forms and input fields
+*/
+
+/* Input field styles */
+.form-control {
+    border-radius: var(--border-radius);
+    border: 2px solid #e9ecef;
+    padding: 12px 20px;
+    font-size: 16px;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Input group icons */
+.input-group-text {
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+    border: 2px solid #e9ecef;
+    border-right: none;
+    background: var(--bg-light);
+    color: var(--primary-color);
+}
+
+/* Form labels */
+.form-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+/* 
+------------------
+HERO SECTIONS
+------------------
+Large banner sections at the top of pages
+*/
+
+/* Main hero background */
+.hero-bg,
+.hero-section {
+    background: var(--gradient);
+    color: var(--text-white);
+    padding: 80px 0;
+    text-align: center;
+}
+
+/* Welcome section for user dashboard */
+.welcome-section {
+    background: var(--gradient);
+    color: var(--text-white);
+    padding: 60px 0;
+}
+
+/* 
+------------------
+LAYOUT STYLES
+------------------
+Page layout and structure
+*/
+
+/* Full height pages (like login) */
+.full-height {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Light background for dashboard pages */
+.bg-light-page {
+    background: var(--bg-light);
+    min-height: 100vh;
+}
+
+/* 
+------------------
+ICON STYLES
+------------------
+Icon sizes and colors
+*/
+
+.icon-large {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+.icon-medium {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+/* 
+------------------
+UTILITY CLASSES
+------------------
+Small helper classes for common styling needs
+*/
+
+/* Text colors */
+.text-primary-custom {
+    color: var(--primary-color) !important;
+}
+
+.text-gradient {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Spacing helpers */
+.mt-custom {
+    margin-top: var(--spacing-large);
+}
+
+.mb-custom {
+    margin-bottom: var(--spacing-large);
+}
+
+.p-custom {
+    padding: var(--spacing-large);
+}
+
+/* 
+------------------
+RESPONSIVE DESIGN
+------------------
+Styles that adapt to different screen sizes
+*/
+
+/* Mobile phones */
+@media (max-width: 576px) {
+    .hero-bg,
+    .hero-section {
+        padding: 40px 0;
+    }
+    
+    .card-login,
+    .card-register {
+        margin: var(--spacing-medium);
+    }
+    
+    .btn-gradient {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+    .icon-large {
+        font-size: 3rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+}
+
+/* 
+------------------
+ELEGANT ADDITIONS
+------------------
+Additional styles for clean, modern appearance
+*/
+
+/* Clean, elegant button styles */
+.btn-elegant {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-elegant:hover {
+    background: #e8850e;
+    transform: translateY(-2px);
+    color: white;
+    box-shadow: 0 5px 15px rgba(247, 148, 29, 0.3);
+}
+
+/* Consistent login/register/form buttons */
+.btn-login,
+.btn-register,
+.btn-custom {
+    background: var(--accent-color) !important;
+    color: white !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-login:hover,
+.btn-register:hover,
+.btn-custom:hover {
+    background: #e8850e !important;
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(247, 148, 29, 0.3) !important;
+}
+
+/* Consistent form focus states */
+.form-control:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(247, 148, 29, 0.25) !important;
+}
+
+/* Consistent input group icons */
+.input-group-text {
+    color: var(--accent-color) !important;
+}
+
+/* Consistent links */
+.text-link {
+    color: var(--accent-color) !important;
+}
+
+.text-link:hover {
+    color: #e8850e !important;
+}
+
+/* Elegant section spacing */
+.section-elegant {
+    padding: 80px 0;
+}
+
+/* Clean typography */
+.title-elegant {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.subtitle-elegant {
+    color: #666;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Modern card styling */
+.card-elegant {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.card-elegant:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* Clean header styling */
+.header-clean {
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+}
+
+/* 
+------------------
+ANIMATION CLASSES
+------------------
+Optional animation effects
+*/
+
+/* Fade in animation */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Bounce effect for buttons */
+.btn-bounce:hover {
+    animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+    0%, 20%, 60%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-5px);
+    }
+    80% {
+        transform: translateY(-2px);
+    }
+}
+
+/* Smooth slide up animation */
+.slide-up {
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+} 

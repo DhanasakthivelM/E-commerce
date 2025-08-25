@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <!-- Basic page information -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied - E-Commerce Platform</title>
+    
+    <!-- External CSS libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Our custom CSS file -->
+    <link href="/css/main.css" rel="stylesheet">
+    
+    <style>
+        /* 
+        ==================
+        ACCESS DENIED STYLES
+        ==================
+        Clean, informative access denied page
+        */
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .access-denied-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            background: white;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .error-icon {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            color: white;
+            font-size: 3rem;
+        }
+        
+        .btn-access {
+            background: #f7941d;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-access:hover {
+            background: #e8850e;
+            color: white;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+        
+        .btn-secondary-access {
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary-access:hover {
+            background: #5a6268;
+            color: white;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .countdown {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #f7941d;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 
+    ==================
+    SIMPLE NAVIGATION
+    ==================
+    -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white position-absolute w-100 top-0" style="z-index: 10;">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-shopping-cart me-2 text-warning"></i>
+                <span style="color: #333; font-weight: bold; font-size: 1.5rem;">E-Commerce</span><span style="color: #f7941d;">.</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- 
+    ==================
+    ACCESS DENIED CONTENT
+    ==================
+    -->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="access-denied-card">
+                    <div class="card-body p-5 text-center">
+                        
+                        <!-- Error Icon -->
+                        <div class="error-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        
+                        <!-- Main Message -->
+                        <h1 class="display-4 fw-bold text-danger mb-3">Access Denied</h1>
+                        <h4 class="text-muted mb-4">Oops! You don't have permission to access this page</h4>
+                        
+                        <!-- Information Box -->
+                        <div class="info-box">
+                            <h5 class="fw-bold mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                What happened?
+                            </h5>
+                            
+                            <!-- Show different messages based on login status -->
+                            <div th:if="${isLoggedIn}">
+                                <p class="mb-2">Hello <strong th:text="${username}">User</strong>! You are logged in with role <span th:text="${userRole}" class="badge bg-info">USER</span>.</p>
+                                <p class="mb-0">However, you don't have permission to access this page. This could be because:</p>
+                                <ul class="list-unstyled mt-2">
+                                    <li><i class="fas fa-circle me-2" style="font-size: 0.5rem;"></i>You need administrator privileges</li>
+                                    <li><i class="fas fa-circle me-2" style="font-size: 0.5rem;"></i>This page requires special permissions</li>
+                                    <li><i class="fas fa-circle me-2" style="font-size: 0.5rem;"></i>You're trying to access another user's data</li>
+                                </ul>
+                            </div>
+                            
+                            <div th:unless="${isLoggedIn}">
+                                <p class="mb-2">You tried to access a protected area that requires authentication.</p>
+                                <p class="mb-0">This could be because:</p>
+                                <ul class="list-unstyled mt-2">
+                                    <li><i class="fas fa-circle me-2" style="font-size: 0.5rem;"></i>You're not logged in</li>
+                                    <li><i class="fas fa-circle me-2" style="font-size: 0.5rem;"></i>Your session has expired</li>
+                                    <li><i class="fas fa-circle me-2" style="font-size: 0.5rem;"></i>You need to create an account first</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="mt-4">
+                            <h5 class="fw-bold mb-3">What can you do?</h5>
+                            <div class="d-flex flex-wrap justify-content-center">
+                                
+                                <!-- Buttons for logged-in users -->
+                                <div th:if="${isLoggedIn}">
+                                    <a href="/user/home" class="btn-access">
+                                        <i class="fas fa-tachometer-alt me-2"></i>
+                                        Go to Dashboard
+                                    </a>
+                                    <a href="/logout" class="btn-secondary-access">
+                                        <i class="fas fa-sign-out-alt me-2"></i>
+                                        Logout & Try Different Account
+                                    </a>
+                                    <a href="/" class="btn-secondary-access">
+                                        <i class="fas fa-home me-2"></i>
+                                        Back to Homepage
+                                    </a>
+                                </div>
+                                
+                                <!-- Buttons for anonymous users -->
+                                <div th:unless="${isLoggedIn}">
+                                    <a href="/login" class="btn-access">
+                                        <i class="fas fa-sign-in-alt me-2"></i>
+                                        Login to Your Account
+                                    </a>
+                                    <a href="/register" class="btn-access">
+                                        <i class="fas fa-user-plus me-2"></i>
+                                        Create New Account
+                                    </a>
+                                    <a href="/" class="btn-secondary-access">
+                                        <i class="fas fa-home me-2"></i>
+                                        Back to Homepage
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Auto Redirect Info -->
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <p class="mb-2">
+                                <i class="fas fa-clock me-2 text-warning"></i>
+                                You will be automatically redirected to the login page in 
+                                <span id="countdown" class="countdown">10</span> seconds.
+                            </p>
+                            <button onclick="clearRedirect()" class="btn btn-sm btn-outline-secondary">
+                                Cancel Auto-redirect
+                            </button>
+                        </div>
+                        
+                        <!-- Help Section -->
+                        <div class="mt-4 pt-3 border-top">
+                            <h6 class="fw-bold mb-2">Need Help?</h6>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-envelope me-2"></i>
+                                Contact us at <a href="mailto:support@ecommerce.com" class="text-decoration-none">support@ecommerce.com</a>
+                            </p>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 
+    ==================
+    JAVASCRIPT
+    ==================
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Auto-redirect countdown
+        let countdown = 10;
+        let redirectActive = true;
+        
+        function updateCountdown() {
+            if (!redirectActive) return;
+            
+            const countdownElement = document.getElementById('countdown');
+            countdownElement.textContent = countdown;
+            
+            if (countdown <= 0) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            countdown--;
+            setTimeout(updateCountdown, 1000);
+        }
+        
+        function clearRedirect() {
+            redirectActive = false;
+            document.getElementById('countdown').textContent = 'cancelled';
+            document.querySelector('button[onclick="clearRedirect()"]').style.display = 'none';
+        }
+        
+        // Start countdown when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCountdown();
+            
+            // Add fade-in animation
+            document.querySelector('.access-denied-card').style.opacity = '0';
+            document.querySelector('.access-denied-card').style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                document.querySelector('.access-denied-card').style.transition = 'all 0.6s ease';
+                document.querySelector('.access-denied-card').style.opacity = '1';
+                document.querySelector('.access-denied-card').style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+
+</body>
+</html> 

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <!-- Basic page information -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - E-Commerce Platform</title>
+    
+    <!-- External CSS libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Our custom CSS file -->
+    <link href="/css/main.css" rel="stylesheet">
+    
+    <style>
+        /* 
+        ==================
+        REGISTER PAGE STYLES
+        ==================
+        Elegant registration form design
+        */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card-register {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 12px 20px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #f7941d;
+            box-shadow: 0 0 0 0.2rem rgba(247, 148, 29, 0.25);
+        }
+        .input-group-text {
+            border-radius: 10px 0 0 10px;
+            border: 2px solid #e9ecef;
+            border-right: none;
+            background: #f8f9fa;
+            color: #f7941d;
+        }
+        .btn-register {
+            background: #f7941d;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: white;
+        }
+        .btn-register:hover {
+            background: #e8850e;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(247, 148, 29, 0.3);
+            color: white;
+        }
+        .header-icon {
+            background: #f7941d;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 2rem;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        .alert-custom {
+            border-radius: 10px;
+            border: none;
+        }
+        .text-link {
+            color: #f7941d;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .text-link:hover {
+            color: #e8850e;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card card-register">
+                    <div class="card-body p-5">
+                        <!-- Header -->
+                        <div class="text-center mb-4">
+                            <div class="header-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <h2 class="fw-bold text-dark mb-2">Create Account</h2>
+                            <p class="text-muted">Join our e-commerce community today</p>
+                        </div>
+
+                        <!-- Success Message -->
+                        <div th:if="${message}" class="alert alert-success alert-custom" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span th:text="${message}">Registration successful!</span>
+                        </div>
+
+                        <!-- Error Message -->
+                        <div th:if="${error}" class="alert alert-danger alert-custom" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span th:text="${error}">Registration failed!</span>
+                        </div>
+
+                        <!-- Registration Form -->
+                        <form th:action="@{/register}" method="post" th:object="${user}" novalidate>
+                            <!-- Username Field -->
+                            <div class="mb-3">
+                                <label for="username" class="form-label">
+                                    <i class="fas fa-user me-1"></i>Username
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="username"
+                                           th:field="*{username}" 
+                                           placeholder="Enter your username"
+                                           required
+                                           minlength="3"
+                                           maxlength="50">
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter a username (3-50 characters).
+                                </div>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope me-1"></i>Email Address
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    <input type="email" 
+                                           class="form-control" 
+                                           id="email"
+                                           th:field="*{email}" 
+                                           placeholder="Enter your email"
+                                           required>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter a valid email address.
+                                </div>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="mb-4">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock me-1"></i>Password
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                    <input type="password" 
+                                           class="form-control" 
+                                           id="password"
+                                           th:field="*{password}" 
+                                           placeholder="Enter your password"
+                                           required
+                                           minlength="6">
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Password must be at least 6 characters long.
+                                </div>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Password should be at least 6 characters long.
+                                </div>
+                            </div>
+
+                            <!-- Register Button -->
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn btn-register btn-lg text-white">
+                                    <i class="fas fa-user-plus me-2"></i>Create Account
+                                </button>
+                            </div>
+
+                            <!-- Login Link -->
+                            <div class="text-center">
+                                <p class="mb-0">Already have an account? 
+                                    <a href="/login" class="text-link">Sign in here</a>
+                                </p>
+                            </div>
+    </form>
+
+                        <!-- Back to Home -->
+                        <div class="text-center mt-4 pt-3 border-top">
+                            <a href="/home" class="text-muted text-decoration-none">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Password toggle functionality
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const password = document.getElementById('password');
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+
+        // Form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByTagName('form');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+</body>
+</html>

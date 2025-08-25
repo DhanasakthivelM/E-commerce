@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - E-Commerce Store</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #5a67d8;
+            --accent-color: #7c88f7;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --background-light: #f8fafc;
+            --white: #ffffff;
+            --border-light: #e5e7eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --blue-light: #f0f4ff;
+            --blue-gradient: linear-gradient(135deg, #667eea, #7c88f7);
+            --blue-dark: #4c51bf;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #667eea;
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            text-decoration: none;
+        }
+
+        /* Main Content */
+        .product-detail-container {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.1);
+            overflow: hidden;
+            margin: 30px 0;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .product-image-section {
+            background: var(--blue-light);
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+        }
+
+        .product-image {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+
+        .product-info-section {
+            padding: 40px;
+        }
+
+        .product-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .product-category {
+            display: inline-block;
+            background: var(--blue-gradient);
+            color: var(--white);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-price {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .original-price {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            text-decoration: line-through;
+            margin-left: 15px;
+        }
+
+        .discount {
+            background: var(--success-color);
+            color: var(--white);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        .product-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--blue-light);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .product-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-item {
+            background: var(--background-light);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .detail-item:hover {
+            background: rgba(102, 126, 234, 0.05);
+            border-color: var(--primary-color);
+        }
+
+        .detail-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .stock-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .in-stock {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .low-stock {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .out-of-stock {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn-primary-custom {
+            background: var(--blue-gradient);
+            border: none;
+            color: var(--white);
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: var(--white);
+        }
+
+        .btn-secondary-custom {
+            background: var(--white);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-secondary-custom:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        /* Navigation */
+        .breadcrumb-nav {
+            background: transparent;
+            padding: 20px 0;
+        }
+
+        .breadcrumb-nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Features Section */
+        .features-section {
+            background: var(--blue-light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .feature-text {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .product-title {
+                font-size: 2rem;
+            }
+
+            .product-price {
+                font-size: 1.8rem;
+            }
+
+            .product-info-section {
+                padding: 20px;
+            }
+
+            .product-image-section {
+                padding: 20px;
+                min-height: 300px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-primary-custom,
+            .btn-secondary-custom {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-placeholder {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar navbar-expand-lg py-3">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="fas fa-shopping-bag me-2"></i>
+                    E-Store
+                </a>
+                
+                <!-- Navigation Links -->
+                <div class="navbar-nav ms-auto d-flex flex-row">
+                    <a class="nav-link px-3" href="/products/allproducts">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Back to Products
+                    </a>
+                    <a class="nav-link px-3" href="/customer/viewcart">
+                        <i class="fas fa-shopping-cart me-1"></i>
+                        View Cart
+                    </a>
+                    <a class="nav-link px-3" sec:authorize="hasRole('ADMIN')" href="/admin/productadd-form">
+                        <i class="fas fa-plus me-1"></i>
+                        Add Product
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="container breadcrumb-nav">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" style="color: black;">
+                <a href="/" style="color: black;">Home</a>
+            </li>
+            <li class="breadcrumb-item" style="color: black;">
+                <a href="/products/allproducts" style="color: black;">Products</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${product.name}">Product Details</li>
+        </ol>
+    </nav>
+</div>
+
+
+    <!-- Success/Error Messages -->
+    <div class="container pt-4">
+        <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${message}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="product-detail-container">
+            <div class="row g-0">
+                <!-- Product Image Section -->
+                <div class="col-lg-6">
+                    <div class="product-image-section">
+                        <img th:src="@{'/products/product-image/' + ${product.productId}}" 
+                             th:alt="${product.name}" 
+                             class="product-image"
+                             loading="lazy">
+                    </div>
+                </div>
+
+                <!-- Product Information Section -->
+                <div class="col-lg-6">
+                    <div class="product-info-section">
+                        <!-- Category Badge -->
+                        <div class="product-category" th:text="${product.categoryName}">Category</div>
+                        
+                        <!-- Product Title -->
+                        <h1 class="product-title" th:text="${product.name}">Product Name</h1>
+                        
+                        <!-- Stock Status -->
+                        <div class="stock-status" 
+                             th:classappend="${product.stockQuantity > 10} ? 'in-stock' : (${product.stockQuantity > 0} ? 'low-stock' : 'out-of-stock')">
+                            <i class="fas fa-circle"></i>
+                            <span th:if="${product.stockQuantity > 10}">In Stock</span>
+                            <span th:if="${product.stockQuantity <= 10 and product.stockQuantity > 0}">Low Stock</span>
+                            <span th:if="${product.stockQuantity == 0}">Out of Stock</span>
+                        </div>
+                        
+                        <!-- Price Section -->
+                        <div class="product-price">
+                            <span th:text="'₹' + ${#numbers.formatDecimal(product.price, 0, 0)}">₹999</span>
+                            <span class="original-price" th:text="'₹' + ${#numbers.formatDecimal(product.price * 1.3, 0, 0)}">₹1299</span>
+                            <span class="discount">23% OFF</span>
+                        </div>
+                        
+                        <!-- Product Description -->
+                        <div class="product-description">
+                            <h5><i class="fas fa-info-circle me-2"></i>Product Description</h5>
+                            <p th:text="${product.description}">Product description will appear here...</p>
+                        </div>
+                        
+                        <!-- Product Details Grid -->
+                        <div class="product-details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">Stock Quantity</div>
+                                <div class="detail-value" th:text="${product.stockQuantity}">50</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Product ID</div>
+                                <div class="detail-value" th:text="${product.productId}">#12345</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <form th:action="@{'/customer/buy-now/' + ${product.productId}}" method="post" style="display: inline;">
+                                <button type="submit" class="btn-primary-custom" style="border: none;">
+                                    <i class="fas fa-bolt"></i>
+                                    Buy Now
+                                </button>
+                            </form>
+                            <form th:action="@{'/customer/addtocart/' + ${product.productId}}" method="post" style="display: inline;">
+                                <button type="submit" class="btn-secondary-custom" style="border: none;">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Add to Cart
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Features Section -->
+                        <div class="features-section">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                                <div class="feature-text">Free shipping on orders over ₹500</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-undo"></i>
+                                </div>
+                                <div class="feature-text">30-day return policy</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="feature-text">1-year warranty included</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Image loading enhancement
+        document.addEventListener('DOMContentLoaded', function() {
+            const productImage = document.querySelector('.product-image');
+            
+            if (productImage) {
+                productImage.style.opacity = '0';
+                productImage.style.transition = 'opacity 0.5s ease';
+                
+                productImage.onload = function() {
+                    this.style.opacity = '1';
+                };
+                
+                // If image is already loaded
+                if (productImage.complete) {
+                    productImage.style.opacity = '1';
+                }
+            }
+            
+            // Add smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Add to cart functionality (placeholder for future enhancement)
+        function addToCart(productId) {
+            // Show loading state
+            const addToCartBtn = document.querySelector('[href*="productdelete-form"]');
+            if (addToCartBtn) {
+                const originalText = addToCartBtn.innerHTML;
+                addToCartBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    addToCartBtn.innerHTML = '<i class="fas fa-check"></i> Added to Cart';
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        addToCartBtn.innerHTML = originalText;
+                    }, 2000);
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>

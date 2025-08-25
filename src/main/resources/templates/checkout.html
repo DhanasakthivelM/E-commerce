@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - E-Commerce Store</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #5a67d8;
+            --accent-color: #7c88f7;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --background-light: #f8fafc;
+            --white: #ffffff;
+            --border-light: #e5e7eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --blue-light: #f0f4ff;
+            --blue-gradient: linear-gradient(135deg, #667eea, #7c88f7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background-light);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            text-decoration: none;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--blue-gradient);
+            color: var(--white);
+            padding: 60px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* Checkout Container */
+        .checkout-container {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.1);
+            margin: 30px 0;
+            padding: 40px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            padding: 12px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: var(--blue-light);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding-top: 15px;
+            margin-top: 10px;
+            border-top: 2px solid var(--primary-color);
+        }
+
+        /* Buttons */
+        .btn-place-order {
+            background: var(--blue-gradient);
+            border: none;
+            color: var(--white);
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-place-order:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: var(--white);
+        }
+
+        .btn-back {
+            background: var(--white);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-back:hover {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar navbar-expand-lg py-3">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="fas fa-shopping-bag me-2"></i>
+                    E-Store
+                </a>
+                
+                <!-- Navigation Links -->
+                <div class="navbar-nav ms-auto d-flex flex-row">
+                    <a class="nav-link px-3" href="/customer/viewcart">
+                        <i class="fas fa-shopping-cart me-1"></i>
+                        Cart
+                    </a>
+                    <a class="nav-link px-3" href="/products/allproducts">
+                        <i class="fas fa-store me-1"></i>
+                        Products
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">
+                <i class="fas fa-credit-card me-3"></i>
+                Checkout
+            </h1>
+            <p class="page-subtitle">Complete your order</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        <div class="row">
+            <!-- Checkout Form -->
+            <div class="col-lg-8">
+                <div class="checkout-container">
+                    <a href="/customer/viewcart" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Cart
+                    </a>
+
+                    <h3 class="section-title">
+                        <i class="fas fa-user me-2"></i>
+                        Shipping Information
+                    </h3>
+
+                    <form action="/customer/place-order" method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" name="fullName" th:value="${user.username}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" th:value="${user.email}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Address</label>
+                            <input type="text" class="form-control" name="address" placeholder="Street address" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">City</label>
+                                    <input type="text" class="form-control" name="city" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">State</label>
+                                    <input type="text" class="form-control" name="state" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">PIN Code</label>
+                                    <input type="text" class="form-control" name="pinCode" pattern="[0-9]{6}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" name="phone" pattern="[0-9]{10}" required>
+                        </div>
+
+                        <h3 class="section-title mt-4">
+                            <i class="fas fa-credit-card me-2"></i>
+                            Payment Method
+                        </h3>
+
+                        <div class="form-group">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="cod" checked>
+                                <label class="form-check-label" for="cod">
+                                    <i class="fas fa-money-bill-wave me-2"></i>
+                                    Cash on Delivery (COD)
+                                </label>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="card">
+                                <label class="form-check-label" for="card">
+                                    <i class="fas fa-credit-card me-2"></i>
+                                    Credit/Debit Card (Coming Soon)
+                                </label>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="upi" value="upi">
+                                <label class="form-check-label" for="upi">
+                                    <i class="fas fa-mobile-alt me-2"></i>
+                                    UPI Payment (Coming Soon)
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-place-order">
+                            <i class="fas fa-check me-2"></i>
+                            Place Order
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="checkout-container">
+                    <h3 class="section-title">
+                        <i class="fas fa-receipt me-2"></i>
+                        Order Summary
+                    </h3>
+
+                    <div class="order-summary">
+                        <div th:each="item : ${cartItems}" class="summary-item">
+                            <span th:text="${item.product.name} + ' x ' + ${item.quantity}">Product x 1</span>
+                            <span>₹<span th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 0)}">999</span></span>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>Subtotal:</span>
+                            <span>₹<span th:text="${#numbers.formatDecimal(subtotal, 0, 0)}">0</span></span>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>Shipping:</span>
+                            <span class="text-success">Free</span>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>Tax (GST 18%):</span>
+                            <span>₹<span th:text="${#numbers.formatDecimal(tax, 0, 0)}">0</span></span>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>Total:</span>
+                            <span class="text-primary">₹<span th:text="${#numbers.formatDecimal(total, 0, 0)}">0</span></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 text-center">
+                        <small class="text-muted">
+                            <i class="fas fa-shield-alt me-1"></i>
+                            Secure checkout with SSL encryption
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Disable other payment methods for now
+        document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+            if (radio.value !== 'cod') {
+                radio.disabled = true;
+                radio.parentElement.style.opacity = '0.5';
+            }
+        });
+    </script>
+</body>
+</html> 
